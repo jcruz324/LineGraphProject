@@ -14,61 +14,73 @@
         <TabControl Margin="10,10,-455,57">
             <TabItem Header="Chart">
                 <Grid x:Name="Grd">
-                    <chartingToolkit:Chart Name="LineChart" Margin="0,0,57,0">
+                    <chartingToolkit:Chart Name="LineChart"
+                                           Margin="0,0,57,0">
                         <chartingToolkit:Chart.Axes>
                             <chartingToolkit:CategoryAxis Orientation="X">
                                 <chartingToolkit:CategoryAxis.AxisLabelStyle>
-                                    <Style x:Name="labelStyleX1" TargetType="{x:Type Control}">
-                                        <Setter Property="FontSize" Value="15"/>
-                                        <Setter Property="LayoutTransform" >
+                                    <Style x:Name="labelStyleX1"
+                                           TargetType="{x:Type Control}">
+                                        <Setter Property="FontSize"
+                                                Value="15" />
+                                        <Setter Property="LayoutTransform">
                                             <Setter.Value>
                                                 <RotateTransform  Angle="-45" />
                                             </Setter.Value>
                                         </Setter>
-                                        <Setter Property="Foreground" Value="Black"/>
+                                        <Setter Property="Foreground"
+                                                Value="Black" />
                                     </Style>
                                 </chartingToolkit:CategoryAxis.AxisLabelStyle>
                             </chartingToolkit:CategoryAxis>
                         </chartingToolkit:Chart.Axes>
-                        <chartingToolkit:LineSeries Title="{Binding SelectedSubscriptionModels[0].StockTemplate.Name}"  ItemsSource="{Binding Line1}" 
-                                                   DependentValuePath="Price" 
-                                                   IndependentValuePath="Col" Margin="0,0,42,5">
-                            <chartingToolkit:LineSeries.LegendItemStyle >
+                        <chartingToolkit:LineSeries Title="{Binding Line1[0].LineAssignment}"
+                                                    ItemsSource="{Binding Line1}"
+                                                    DependentValuePath="Price"
+                                                    IndependentValuePath="Col"
+                                                    Margin="0,0,42,5">
+                            <chartingToolkit:LineSeries.LegendItemStyle>
                                 <Style TargetType="{x:Type chartingToolkit:LegendItem}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Setter Property="Visibility"
+                                            Value="Collapsed" />
                                 </Style>
                             </chartingToolkit:LineSeries.LegendItemStyle>
                         </chartingToolkit:LineSeries>
-                        <chartingToolkit:LineSeries Title="{Binding SelectedSubscriptionModels[1].StockTemplate.Name}" ItemsSource="{Binding Line2}" 
-                                                    DependentValuePath="Price" 
-                                                    IndependentValuePath="Col" Margin="0,0,42,5" RenderTransformOrigin="0.5,0.5">
+                        <chartingToolkit:LineSeries Title="{Binding Line2[0].LineAssignment}"
+                                                    ItemsSource="{Binding Line2}"
+                                                    DependentValuePath="Price"
+                                                    IndependentValuePath="Col"
+                                                    Margin="0,0,42,5"
+                                                    RenderTransformOrigin="0.5,0.5">
                             <chartingToolkit:LineSeries.RenderTransform>
                                 <TransformGroup>
-                                    <ScaleTransform/>
-                                    <SkewTransform/>
-                                    <RotateTransform/>
-                                    <TranslateTransform/>
+                                    <ScaleTransform />
+                                    <SkewTransform />
+                                    <RotateTransform />
+                                    <TranslateTransform />
                                 </TransformGroup>
                             </chartingToolkit:LineSeries.RenderTransform>
                             <chartingToolkit:LineSeries.LegendItemStyle>
                                 <Style TargetType="{x:Type chartingToolkit:LegendItem}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Setter Property="Visibility"
+                                            Value="Collapsed" />
                                 </Style>
                             </chartingToolkit:LineSeries.LegendItemStyle>
                         </chartingToolkit:LineSeries>
-                        <chartingToolkit:LineSeries Title="{Binding SelectedSubscriptionModels[2].StockTemplate.Name}"  ItemsSource="{Binding Line3}" 
-                                                    DependentValuePath="Price" 
-                                                    IndependentValuePath="Col" Margin="0,0,42,5">
-                            <chartingToolkit:LineSeries.LegendItemStyle >
+                        <chartingToolkit:LineSeries Title="{Binding Line3[0].LineAssignment}"
+                                                    ItemsSource="{Binding Line3}"
+                                                    DependentValuePath="Price"
+                                                    IndependentValuePath="Col"
+                                                    Margin="0,0,42,5">
+                            <chartingToolkit:LineSeries.LegendItemStyle>
                                 <Style TargetType="{x:Type chartingToolkit:LegendItem}">
-                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                    <Setter Property="Visibility"
+                                            Value="Collapsed" />
                                 </Style>
                             </chartingToolkit:LineSeries.LegendItemStyle>
                         </chartingToolkit:LineSeries>
                     </chartingToolkit:Chart>
-            </Grid>
-
-
+                </Grid>
 
             </TabItem>
             <TabItem Header="Subscribe/Unsubscribe">

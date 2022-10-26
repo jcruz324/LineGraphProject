@@ -45,6 +45,9 @@ namespace SecurityPricesDesktopApp.ViewModels
             _subscriptionModel = subscriptionModel;
             CancelSubscriptionCommand = new CancelSubscriptionCommand(this);
             AddSubscriptionCommand = new AddSubscriptionCommand(this);
+            LineCollection.Add(Line1);
+            LineCollection.Add(Line2);
+            LineCollection.Add(Line3);
             BeginTimerTicker();
         }
         public ObservableCollection<SubscriptionModel> SelectedSubscriptionModels
@@ -86,8 +89,8 @@ namespace SecurityPricesDesktopApp.ViewModels
         /// <param name="e"></param>
         public void TimeChangedUpdateChart(object sender, EventArgs e)
         {
-           // Todo store the Line collections into a list to handle all of these behaviors
-            var xAxisValue = DateTime.Now.ToString("HH:mm:ss");
+            // X Axis of the Chart is Time
+            var timeAxis = DateTime.Now.ToString("HH:mm:ss");
 
             // Lop off unsubscribed prices
             RemoveUnSubscribedModels();
@@ -100,72 +103,66 @@ namespace SecurityPricesDesktopApp.ViewModels
                 return;
             }
 
-            // Keep data points to 10 prices or less
-            if (Line1.Count >= MaxAmountOfPrices)
+            // Keep data points to the MaxAmountOfPrices variable or less
+            foreach (ObservableCollection<Data> line in LineCollection)
             {
-                Line1.RemoveAt(0);
+                if (line.Count >= MaxAmountOfPrices)
+                    line.RemoveAt(0);
             }
-            if (Line2.Count >= MaxAmountOfPrices)
-            {
-                Line2.RemoveAt(0);
-            }
-            if (Line3.Count >= MaxAmountOfPrices)
-            {
-                Line3.RemoveAt(0);
-            }
-            
-          
+
+            AddPricesToLines(timeAxis); // Add prices to the chart
+        }
+
+        private void AddPricesToLines(string timeAxis)
+        {
             // Add Prices on the Data for the line series
             for (int i = 0; i < SelectedSubscriptionModels.Count; i++)
             {
                 decimal stockPrice = SelectedSubscriptionModels[i].StockTemplate.StockPrice;
                 Thread.Sleep(10);
                 string stockTicker = SelectedSubscriptionModels[i].StockTemplate.Ticker;
-               
 
-                if ((Line1.ToList().FindIndex(line => line.LineAssignment == stockTicker) >= 0) || (Line1.Count == 0))
+
+
+                foreach (ObservableCollection<Data> line in LineCollection)
                 {
-                    Line1.Add(new Data() { Col = xAxisValue, Price = stockPrice, LineAssignment = stockTicker });
-                    continue;
+                    // Look for stockTicker in the line iteration, if the stock ticker is in the line iteration then add a new price to that line for the Stock Ticker
+                    if ((line.ToList().FindIndex(x => x.LineAssignment == stockTicker) >= 0) || (line.Count == 0))
+                    {
+                        line.Add(new Data() { Col = timeAxis, Price = stockPrice, LineAssignment = stockTicker });
+                        break;
+                    }
                 }
-
-                if ((Line2.ToList().FindIndex(line => line.LineAssignment == stockTicker) >= 0) || (Line2.Count == 0))
-                {
-                    Line2.Add(new Data() { Col = xAxisValue, Price = stockPrice, LineAssignment = stockTicker });
-                    continue;
-                }
-
-                if ((Line3.ToList().FindIndex(line => line.LineAssignment == stockTicker) >= 0) || (Line3.Count == 0))
-                {
-                    Line3.Add(new Data() { Col = xAxisValue, Price = stockPrice, LineAssignment = stockTicker });
-                }
-
             }
         }
 
         private void RemoveOrphanedLines()
         {
-            // Remove Duplicate Lines off prices. The Lineseries will collapse an existing ticker to the next line, this is to ensure the orphaned line is cleaned up
-            // Todo prevent orphaned lines
+            // Remove Duplicate Lines off prices. The Lineseries will collapse an existing ticker to the next line, this is to ensure the orphaned line is cleaned up            
+            // Todo prevent orphaned lines - I think maybe I have to look into the behavior of the ChartToolKit library
             for (int i = 0; i < SelectedSubscriptionModels.Count; i++)
             {
                 string stockTicker = SelectedSubscriptionModels[i].StockTemplate.Ticker;
 
-                if ((Line2.ToList().FindIndex(line => line.LineAssignment == stockTicker) >= 0) &&
-                    (Line1.ToList().FindIndex(line => line.LineAssignment == stockTicker) >= 0))
+                foreach (ObservableCollection<Data> line in LineCollection)
                 {
-                    for (int dotIndex = 0; dotIndex < Line2.Count; dotIndex++)
+                    if (line.ToList().FindIndex(x => x.LineAssignment == stockTicker) >= 0)
                     {
-                        Line2.RemoveAt(dotIndex);
-                    }
-                }
+                        // Check other lines 
+                        foreach (ObservableCollection<Data> otherLine in LineCollection)
+                        {
+                            if (!line.Equals(otherLine)) // Don't look at the initial line
+                            {
+                                if (otherLine.ToList().FindIndex(y => y.LineAssignment == stockTicker) >= 0) // If the same Stock Ticker is found in any other lines then remove the values in the line
+                                {
+                                    for (int dotIndex = 0; dotIndex < otherLine.Count; dotIndex++)
+                                    {
+                                        otherLine.RemoveAt(dotIndex); // Dissolve line
+                                    }
+                                }
+                            }
 
-                if ((Line3.ToList().FindIndex(line => line.LineAssignment == stockTicker) >= 0) &&
-                    (Line2.ToList().FindIndex(line => line.LineAssignment == stockTicker) >= 0))
-                {
-                    for (int dotIndex = 0; dotIndex < Line3.Count; dotIndex++)
-                    {
-                        Line3.RemoveAt(dotIndex);
+                        }
                     }
                 }
             }
@@ -176,28 +173,17 @@ namespace SecurityPricesDesktopApp.ViewModels
             for (int i = 0; i < AvailableSubscriptionModels.Count; i++)
             {
                 string stockTicker = AvailableSubscriptionModels[i].StockTemplate.Ticker;
-
-                if (Line1.ToList().FindIndex(line => line.LineAssignment == stockTicker) >= 0)
+                
+                // Loop through each line to see if any line's stock ticker is marked to be removed according to the AvailableSubscriptionModels collection
+                foreach (ObservableCollection<Data> line in LineCollection)
                 {
-                    for (int dotIndex = 0; dotIndex < Line1.Count; dotIndex++)
+                    if (line.ToList().FindIndex(x => x.LineAssignment == stockTicker) >= 0)
                     {
-                        Line1.RemoveAt(dotIndex);
-                    }
-                }
-
-                if (Line2.ToList().FindIndex(line => line.LineAssignment == stockTicker) >= 0)
-                {
-                    for (int dotIndex = 0; dotIndex < Line2.Count; dotIndex++)
-                    {
-                        Line2.RemoveAt(dotIndex);
-                    }
-                }
-
-                if (Line3.ToList().FindIndex(line => line.LineAssignment == stockTicker) >= 0)
-                {
-                    for (int dotIndex = 0; dotIndex < Line3.Count; dotIndex++)
-                    {
-                        Line3.RemoveAt(dotIndex);
+                        for (int dotIndex = 0; dotIndex < line.Count; dotIndex++)
+                        {
+                            line.RemoveAt(dotIndex);
+                        }
+                        break; // Line was found, break out of the loop to look for the next Ticker
                     }
                 }
             }
@@ -206,6 +192,9 @@ namespace SecurityPricesDesktopApp.ViewModels
         public ObservableCollection<Data> Line1 { get; set; } = new ObservableCollection<Data>();
         public ObservableCollection<Data> Line2 { get; set; } = new ObservableCollection<Data>();
         public ObservableCollection<Data> Line3 { get; set; } = new ObservableCollection<Data>();
+
+        public ObservableCollection<ObservableCollection<Data>> LineCollection = new ObservableCollection<ObservableCollection<Data>>();
+ 
 
         public class Data
         {

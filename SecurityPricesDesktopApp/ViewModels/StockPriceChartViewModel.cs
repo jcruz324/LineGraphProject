@@ -2,7 +2,7 @@
 
 namespace SecurityPricesDesktopApp.ViewModels
 {
-    public class StockPriceChartViewModel : ViewModelBase // needed to be declared as partial because of the declaration in the corresponding view. 
+    public class StockPriceChartViewModel : ViewModelBase 
     {
 
         public ICommand SubscribeCommand { get; }

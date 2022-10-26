@@ -20,6 +20,7 @@ namespace SecurityPricesDesktopApp.Application.Commands
         }
         public override void Execute(object parameter)
         {
+            // Todo - check to ensure that ticker is selected, maybe disable the button
             _viewModel.SelectedUnsubscribedSubscriptionModel.StockTemplate.IsSubscribed = true;
             _viewModel.OnPropertyChanged("SelectedSubscriptionModels");
             _viewModel.OnPropertyChanged("AvailableSubscriptionModels");
