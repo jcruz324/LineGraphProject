@@ -92,8 +92,8 @@ namespace SecurityPricesDesktopApp.ViewModels
             // Lop off unsubscribed prices
             RemoveUnSubscribedModels();
 
-            
             RemoveOrphanedLines();
+
             // If there are no prices then exit
             if (SelectedSubscriptionModels.Count <= 0)
             {
@@ -213,8 +213,6 @@ namespace SecurityPricesDesktopApp.ViewModels
             public decimal Price { get; set; }
             public string LineAssignment { get; set; }
         }
-
-
         #endregion
     }
 }
