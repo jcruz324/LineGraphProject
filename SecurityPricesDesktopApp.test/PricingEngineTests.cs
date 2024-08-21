@@ -16,6 +16,7 @@ namespace SecurityPricesDesktopApp.Test
         {
             Apple apple = new Apple();
             decimal applePrice = apple.StockPrice;
+            string testString = "";
             //Assert.IsNotNull(whatPrice);
 
             MicrosoftModel microsoft = new MicrosoftModel();
